@@ -1,0 +1,19 @@
+[package]
+name = "frontend"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+common = { path = "../common" }
+yew = { workspace = true }
+gloo-net = { workspace = true }
+wasm-bindgen-futures = { workspace = true }
+eframe = { workspace = true }
+egui = { workspace = true }
+wasm-bindgen = { workspace = true }
+web-sys = { workspace = true, features = ["WebSocket", "MessageEvent", "HtmlCanvasElement", "Window", "Document"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+shared-core = { workspace = true }
+shared-frontend = { workspace = true }
+js-sys = "0.3"
