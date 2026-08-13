@@ -1,5 +1,7 @@
 use axum::{
-    extract::ws::{Message, WebSocket, WebSocketUpgrade},
+    extract::{ws::{Message, WebSocket, WebSocketUpgrade}, Extension, Request},
+    http::{header, StatusCode},
+    middleware::{self, Next},
     response::Response,
     routing::get,
     Router,
@@ -11,9 +13,39 @@ use tokio::process::Command;
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
-    let app = Router::new().route("/ws", get(ws_handler));
+    let admin_token = std::env::var("ADMIN_TOKEN").expect("ADMIN_TOKEN environment variable must be set");
+
+    let admin_routes = Router::new()
+        .route("/status", get(admin_status))
+        .route_layer(middleware::from_fn(auth_middleware));
+
+    let app = Router::new()
+        .route("/ws", get(ws_handler))
+        .nest("/api/admin", admin_routes)
+        .layer(Extension(admin_token));
+
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await?;
     axum::serve(listener, app).await
+}
+
+async fn admin_status() -> &'static str {
+    "Admin API OK"
+}
+
+async fn auth_middleware(
+    Extension(admin_token): Extension<String>,
+    req: Request,
+    next: Next,
+) -> Result<Response, StatusCode> {
+    let auth_header = req
+        .headers()
+        .get(header::AUTHORIZATION)
+        .and_then(|val| val.to_str().ok());
+
+    match auth_header {
+        Some(auth) if auth == format!("Bearer {}", admin_token) => Ok(next.run(req).await),
+        _ => Err(StatusCode::UNAUTHORIZED),
+    }
 }
 
 async fn ws_handler(ws: WebSocketUpgrade) -> Response {
