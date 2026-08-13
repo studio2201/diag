@@ -17,6 +17,6 @@ FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 WORKDIR /app
 COPY --from=builder /app/diag/target/release/backend /app/server
 COPY --from=builder /app/diag/frontend/dist /app/dist
-ENV BIND_ADDR="0.0.0.0:8080"
-EXPOSE 8080
+ENV BIND_ADDR="0.0.0.0:4402"
+EXPOSE 4402
 CMD ["/app/server"]
