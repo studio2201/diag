@@ -1,0 +1,10 @@
+{
+  "name": "Diag Frontend",
+  "short_name": "Diag",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "description": "Diagnostic Web Application",
+  "icons": []
+}
