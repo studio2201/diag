@@ -1,3 +1,5 @@
+<img src="brand/icon_128x128.png" alt="diag icon" width="128" align="right" />
+
 # diag
 
 ## Container Variables
